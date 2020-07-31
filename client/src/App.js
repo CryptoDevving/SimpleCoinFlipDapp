@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import SimpleCoinFlip from './contracts/SimpleCoinFlip.json';
 import AppContainer from './components/AppContainer';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 import getWeb3 from './getWeb3';
 
 import './App.css';
@@ -60,7 +63,18 @@ export default function App() {
   }, [getPotentialWinnings]);
 
   if (!web3) {
-    return <div>Loading Web3, accounts, and contract...</div>;
+    return (
+      <Container maxWidth="sm">
+        <Box
+          pt={33}
+          color="primary.main"
+          display="flex"
+          justifyContent="center"
+        >
+          <Typography variant="h2">Loading...</Typography>
+        </Box>
+      </Container>
+    );
   }
   return (
     <AppContainer

@@ -16,7 +16,7 @@ export const styles = (theme) => ({
 
 function App(props) {
   const { randomFxn, potentialWinnings, accountBalance, classes } = props;
-  const [flippping, setFlipping] = useState(false);
+  const [flipping, setFlipping] = useState(false);
   const [didWin, setDidWin] = useState(null);
   const [betPlaced, setBetPlaced] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -34,7 +34,6 @@ function App(props) {
     } else {
       setErrorMsg('');
       setFlipping(true);
-      setDidWin(null);
       setDidWin(!!(await randomFxn()));
       setFlipping(false);
     }
@@ -44,16 +43,21 @@ function App(props) {
     setBetPlaced(e.target.value);
   }
 
+  function onTryAgainClick() {
+    setDidWin(null);
+    setBetPlaced('');
+  }
+
   return (
     <Fragment>
       <AppBar balance={accountBalance} />
       <Container>
         <Box display="flex" alignItems="center" flexDirection="column" pt={15}>
           <Box textAlign="center" height={150} mb={10}>
-            {flippping && didWin === null && (
+            {flipping && didWin === null && (
               <CircularProgress size={120} color="secondary" />
             )}
-            {!flippping && didWin === null && (
+            {!flipping && didWin === null && (
               <Box
                 color="primary.main"
                 display="flex"
@@ -77,32 +81,42 @@ function App(props) {
               </Box>
             )}
           </Box>
-          <Box display="flex" alignItems="center">
-            <TextField
-              onChange={onBetPlacedChange}
-              value={betPlaced}
-              autoFocus
-              label="Your Bet (ETH)"
-              type="number"
-              error={!!errorMsg}
-              helperText={errorMsg}
-              className={classes.betInput}
-            />
-            <Box mr={2} />
-            <Button
-              onClick={onClickFlip}
-              color="primary"
-              size="large"
-              variant="contained"
-              disabled={flippping}
-            >
-              {flippping
-                ? 'Good Luck!'
-                : didWin === null
-                ? 'Flip Coin'
-                : 'Try Again!'}
-            </Button>
-          </Box>
+          {didWin === null && (
+            <Box display="flex" alignItems="center">
+              <TextField
+                onChange={onBetPlacedChange}
+                value={betPlaced}
+                autoFocus
+                label="Your Bet (ETH)"
+                type="number"
+                error={!!errorMsg}
+                helperText={errorMsg}
+                className={classes.betInput}
+              />
+              <Box mr={2} />
+              <Button
+                onClick={onClickFlip}
+                color="primary"
+                size="large"
+                variant="contained"
+                disabled={flipping}
+              >
+                Flip Coin
+              </Button>
+            </Box>
+          )}
+          {didWin !== null && (
+            <Box display="flex" alignItems="center">
+              <Button
+                onClick={onTryAgainClick}
+                color="primary"
+                size="large"
+                variant="contained"
+              >
+                Try Again!
+              </Button>
+            </Box>
+          )}
         </Box>
       </Container>
     </Fragment>
