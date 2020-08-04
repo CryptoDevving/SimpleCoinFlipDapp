@@ -6,6 +6,7 @@ import Toolbar from '../components/Toolbar';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import AnimatedNumber from 'animated-number-react';
 
 const styles = (theme) => ({
   toolbar: {
@@ -19,6 +20,8 @@ const styles = (theme) => ({
 function AppBar(props) {
   const { classes, balance } = props;
 
+  const formatBalance = (balance) => parseFloat(balance).toFixed(4);
+  console.log(balance);
   return (
     <div>
       <MuiAppBar elevation={0} position="fixed">
@@ -28,9 +31,10 @@ function AppBar(props) {
           </Link>
           <Box display="flex" alignItems="center">
             {balance && <Typography variant="h6">Your Balance:</Typography>}
-            {balance && (
+            {!!balance && (
               <Typography className={classes.balance} variant="h5">
-                {balance.toFixed(4)} ETH
+                <AnimatedNumber formatValue={formatBalance} value={balance} />{' '}
+                ETH
               </Typography>
             )}
           </Box>

@@ -5,7 +5,7 @@ module.exports = function(deployer, network, accounts) {
     web3.eth.sendTransaction({
       from: accounts[0],
       to: instance.address,
-      value: web3.utils.toWei('1', 'ether')
+      value: web3.utils.toWei('5', 'ether')
     }).catch(e => {
       console.log(`Error : ${e}`);
     });

@@ -15,7 +15,7 @@ export const styles = (theme) => ({
 });
 
 function App(props) {
-  const { randomFxn, potentialWinnings, accountBalance, classes } = props;
+  const { placeBet, currentJackpot, accountBalance, classes } = props;
   const [flipping, setFlipping] = useState(false);
   const [didWin, setDidWin] = useState(null);
   const [betPlaced, setBetPlaced] = useState('');
@@ -27,14 +27,15 @@ function App(props) {
       setErrorMsg('Enter a numeric value');
     } else if (betPlacedNum <= 0) {
       setErrorMsg('Bet must be non-zero');
-    } else if (betPlacedNum > potentialWinnings) {
+    } else if (betPlacedNum > currentJackpot) {
       setErrorMsg('Bet cannot be larger than jackpot');
     } else if (betPlacedNum > accountBalance) {
       setErrorMsg('Bet cannot exceed your balance');
     } else {
       setErrorMsg('');
       setFlipping(true);
-      setDidWin(!!(await randomFxn()));
+      const didWin = await placeBet(betPlaced);
+      setDidWin(didWin);
       setFlipping(false);
     }
   }
@@ -47,6 +48,10 @@ function App(props) {
     setDidWin(null);
     setBetPlaced('');
   }
+
+  const formattedJackpot = (jackpot) => {
+    return parseFloat(jackpot).toFixed(5);
+  };
 
   return (
     <Fragment>
@@ -66,16 +71,20 @@ function App(props) {
               >
                 <Typography variant="h4">Current Max. Jackpot</Typography>
                 <Box color="secondary.main">
-                  <Typography variant="h2">{potentialWinnings} ETH</Typography>
+                  {!!currentJackpot && (
+                    <Typography variant="h2">
+                      {formattedJackpot(currentJackpot)} ETH
+                    </Typography>
+                  )}
                 </Box>
               </Box>
             )}
-            {didWin === false && (
+            {didWin === true && (
               <Box color="success.main">
                 <Typography variant="h1">You Won!</Typography>
               </Box>
             )}
-            {didWin === true && (
+            {didWin === false && (
               <Box color="error.main">
                 <Typography variant="h1">Sorry, You Lost.</Typography>
               </Box>

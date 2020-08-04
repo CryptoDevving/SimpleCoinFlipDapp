@@ -4,13 +4,15 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "bluebird": "^3.7.2",
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "react-scripts": "3.2.0",
+    "uuid": "^8.3.0",
     "web3": "1.2.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --no-cache",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
