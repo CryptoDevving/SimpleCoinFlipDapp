@@ -20,7 +20,7 @@ contract SimpleCoinFlip {
 
         if (random() == 0) {
             // Win
-            uint winning = msg.value + getCurrentJackpot();
+            uint winning = SafeMath.mul(msg.value, 2);
             msg.sender.transfer(winning);
             emit FlipOutcome(true, winning, uuid, msg.sender);
             return true;

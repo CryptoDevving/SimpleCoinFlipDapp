@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import SimpleCoinFlip from './contracts/SimpleCoinFlip.json';
+import useWeb3 from './hooks/useWeb3';
+import useContract from './hooks/useContract';
+import useAccounts from './hooks/useAccounts';
 import AppContainer from './components/AppContainer';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import getWeb3 from './getWeb3';
 import { v4 as uuidv4 } from 'uuid';
 import Promise from 'bluebird';
 
 export default function App() {
-  const [web3, setWeb3] = useState(null);
-  const [accounts, setAccounts] = useState(null);
+  const web3 = useWeb3();
+  const contract = useContract(web3);
+  const accounts = useAccounts(web3);
+
   const [accountBalance, setAccountBalance] = useState(null);
-  const [contract, setContract] = useState(null);
   const [currentJackpot, setCurrentJackpot] = useState(null);
   const [latestLogId, setLatestLogId] = useState(null);
 
@@ -50,38 +52,19 @@ export default function App() {
     [contract, accounts, web3]
   );
 
-  useEffect(function initialize() {
-    async function _initialize() {
-      try {
-        // Get network provider and web3 instance.
-        const web3 = await getWeb3();
-
-        // Get the contract instance.
-        const networkId = await web3.eth.net.getId();
-        const deployedNetwork = SimpleCoinFlip.networks[networkId];
-        const instance = new web3.eth.Contract(
-          SimpleCoinFlip.abi,
-          deployedNetwork && deployedNetwork.address
-        );
-
-        instance.events.FlipOutcome(async (error, event) => {
-          setLatestLogId(event.id);
-        });
-
-        setWeb3(web3);
-        setContract(instance);
-
-        // Use web3 to get the user's accounts.
-        const accounts = await web3.eth.getAccounts();
-        setAccounts(accounts);
-      } catch (error) {
-        alert(
-          'Failed to load web3, accounts, or contract. Check console for details.'
-        );
+  useEffect(
+    function initialize() {
+      async function _initialize() {
+        if (contract) {
+          contract.events.FlipOutcome(async (error, event) => {
+            setLatestLogId(event.id);
+          });
+        }
       }
-    }
-    _initialize();
-  }, []);
+      _initialize();
+    },
+    [contract]
+  );
 
   useEffect(
     function setJackpot() {

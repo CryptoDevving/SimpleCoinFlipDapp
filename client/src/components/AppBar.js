@@ -20,7 +20,7 @@ const styles = (theme) => ({
 function AppBar(props) {
   const { classes, balance } = props;
 
-  const formatBalance = (balance) => parseFloat(balance).toFixed(4);
+  const formatBalance = (balance) => parseFloat(balance).toFixed(5);
   console.log(balance);
   return (
     <div>
